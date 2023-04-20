@@ -16,7 +16,7 @@ If you prefer using our pre-built image at [TODO: insert image tag here] rather 
 
 ### Prepare Python code for running an inference
 
-First, we define how to run an inference on this model in [model.py](./flan-t5-small/model.py). The core steps include initializing the model and tokenizer using the `transformers` Python library, then running a `predict()` function that tokenizes the text input, runs the model, then de-tokenizezes the model back into a text format.
+First, we define how to run an inference on this model in [model.py](./flan-t5-small/model.py). The core steps include initializing the model and tokenizer using the `transformers` Python library, then running a `predict()` function that tokenizes the text input, runs the model, then de-tokenizes the model back into a text format.
 
 ### Create a server
 Next, we wrap this model in a [Sanic][sanic] server in [server.py](./flan-t5-small/server.py). Sanic is a Python 3.7+ web server and web framework that’s written to go fast. In our server file, we define the default port on which to serve inferences. We also define two server routes that Octo Cloud containers must have: a route for inference requests (e.g. "/predict") and a route for health checks (e.g. "/healthcheck"). The route for inference requests must receive JSON inputs and JSON outputs.
