@@ -1,22 +1,31 @@
 # octocloud-templates
 
-This repo contains examples and templates to deploy different types of models into the OctoML Cloud.
+This repo contains examples of how to create production-grade endpoints for Machine Learnings models using the Octo Cloud.
 
 ## Prerequisites
 
-- OctoML Cloud: [TODO: insert signup instructions here]
-- Docker Hub: You have an account on [Docker Hub][dockerHub] and have authenticated the Docker CLI
+- Octo Cloud: You can signup for an account [here](https://octoml.ai/cp/model-serving-compute-access/)
+- Docker: You have an account on [Docker Hub][dockerHub], have [downloaded Docker desktop](https://www.docker.com/products/docker-desktop/) to your local machine, and have authenticated the Docker CLI
   on your machine. You can learn how to authenticate your CLI [here][dockerCLIAuth].
 
-## A simple example: Flan-T5 small
 
-A simple example is wrapping [Google's Flan-T5 small][flant5small] model in a [Sanic][sanic] server for a simple
-Q&A text2text service. You can see the server code in [model.py](./flan-t5-small/server.py).
+In this example, we will use the [Flan-T5 small](https://huggingface.co/google/flan-t5-small) model to make a production-grade endpoint for Question Answering.
 
-We will start with packaging the server in a [Docker image](./flan-t5-small/Dockerfile). If you'd like to skip this
-step, you can skip to Step 2 below and use our pre-packaged image at [TODO: insert image tag here].
+## Step 1: Create a container
+If you prefer using our pre-built image at [TODO: insert image tag here] rather than building one on your local machine, skip to Step 2 below.
 
-### Step 1. Build the Docker image
+### Prepare Python code for running an inference
+
+First, we define how to run an inference on this model in [model.py](./flan-t5-small/model.py). The core steps include initializing the model and tokenizer using the `transformers` Python library, then running a `predict()` function that tokenizes the text input, runs the model, then de-tokenizezes the model back into a text format.
+
+### Create a server
+Next, we wrap this model in a [Sanic][sanic] server in [server.py](./flan-t5-small/server.py). Sanic is a Python 3.7+ web server and web framework that’s written to go fast. In our server file, we define the default port on which to serve inferences. We also define two server routes that Octo Cloud containers must have: a route for inference requests (e.g. "/predict") and a route for health checks (e.g. "/healthcheck"). The route for inference requests must receive JSON inputs and JSON outputs.
+
+[TODO] Explain the line server.run(host="0.0.0.0", port=port, workers=1)
+
+### Package the server in a Dockerfile
+
+Now we can package the server by defining a Dockerfile(./flan-t5-small/Dockerfile). 
 
 Along with installing the dependencies, the Dockerfile also [downloads the model](./flan-t5-small/model.py)
 into the image at build time. Because the model isn't too big, we can cache it in the Docker image for faster
@@ -24,13 +33,17 @@ startup without impacting the image size too much. If your model is larger, you 
 start instead of caching it in the Docker image. This may affect your container startup time, but keeps the
 image itself slim.
 
+
+### Build a Docker image using the Dockerfile
+
 ```sh
 $ DOCKER_REGISTRY="XXX" # Put your Docker Hub username here
 $ cd ./flan-t5-small
 $ docker build -t "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic" -f Dockerfile .
 ```
 
-You can run this Docker image locally if you'd like..
+### Test the image locally
+Run this Docker image locally to test that it can run inferences as expected:
 
 ```sh
 $ docker run -d --rm \
@@ -47,18 +60,16 @@ $ curl -X POST http://localhost:8000/predict \
     --data '{"prompt":"What state is Seattle in?","max_length":100}'
 ```
 
-## Step 2. Deploy into the OctoML Cloud
+### Push the image to a cloud registry
 
-Now we are a few short steps to deploying our image into the OctoML Cloud. If you
-skipped here and are using our pre-built image you can jump ahead. Otherwise,
-push your Docker image to Docker Hub with:
-
+Push your Docker image to Docker Hub with:
 ```sh
 $ docker push "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic"
 ```
 
-Now we can deploy the image, keeping up 1 replica with the ability to autoscale up to 3 depending on
-traffic load. We will deploy on an NVIDIA T4 instance, and our model will automatically
+## Step 2: Run your Docker container in the Octo Cloud
+
+Now we can create an production-grade endpoint for your Docker container, keeping up 1 replica with the ability to autoscale up to 3 depending on traffic load. We will run the endpoint on a NVIDIA T4 instance, and our model will automatically
 [leverage the GPU when it's detected](./flan-t5-small/model.py).
 
 ```sh
@@ -79,15 +90,15 @@ find the URL with `jq`:
 ```sh
 $ FLAN_ENDPOINT=$(octocloud endpoint get --name flan-t5-small-sanic --output json | jq -r '.endpoint')
 $ curl -X POST "$FLAN_ENDPOINT/predict" \
-    -H "Authorization: Bearer $OCTOML_TOKEN" \
+    -H "Authorization: Bearer $OCTOCLOUD_TOKEN" \
     -H "Content-Type: application/json" \
     --data '{"prompt":"What state is Seattle in?","max_length":100}'
 $ octocloud logs --name flan-t5-small-sanic
 ```
 
-Finally we can update the min replicas to 0 so it autoscales down to 0 when there is no traffic.
-Note that so long as max replicas remains above 0, OctoML Cloud will autoscale your endpoint
-up to max replicas to handle the traffic.
+Finally we can update the minimum number of replicas to 0 so that our endpoint autoscales down to 0 when there is no traffic.
+Note that so long as the maximum number of replicas remains above 0, OctoML Cloud will autoscale your endpoint
+up to the maximum number of replicas to handle the traffic.
 
 ```sh
 $ octocloud endpoint update --name flan-t5-small-sanic --min-replicas 0
