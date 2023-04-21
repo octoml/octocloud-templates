@@ -19,9 +19,14 @@ If you prefer using our pre-built image at [TODO: insert image tag here] rather 
 First, we define how to run an inference on this model in [model.py](./flan-t5-small/model.py). The core steps include initializing the model and tokenizer using the `transformers` Python library, then running a `predict()` function that tokenizes the text input, runs the model, then de-tokenizes the model back into a text format.
 
 ### Create a server
-Next, we wrap this model in a [Sanic][sanic] server in [server.py](./flan-t5-small/server.py). Sanic is a Python 3.7+ web server and web framework that’s written to go fast. In our server file, we define the default port on which to serve inferences. We also define two server routes that Octo Cloud containers must have: a route for inference requests (e.g. "/predict") and a route for health checks (e.g. "/healthcheck"). The route for inference requests must receive JSON inputs and JSON outputs.
+Next, we wrap this model in a [Sanic][sanic] server in [server.py](./flan-t5-small/server.py). Sanic is a Python 3.7+ web server and web framework that’s written to go fast. In our server file, we define the following:
 
-[TODO] Explain the line server.run(host="0.0.0.0", port=port, workers=1)
+- A default port on which to serve inferences. The port can be any positive number, as long as it's not in use by another application. 80 is commonly used for HTTP, and 443 is often for HTTPS. In this case we choose 8000.
+- Two server routes that Octo Cloud containers must have:
+  - a route for inference requests (e.g. "`/predict`"). This route for inference requests must receive JSON inputs and JSON outputs.
+  - a route for health checks (e.g. "`/healthcheck`")
+- Number of workers (not required by Octo Cloud). Typical best practice is to make this number some function of the # of CPU cores that the server has access to and should use.
+
 
 ### Package the server in a Dockerfile
 
