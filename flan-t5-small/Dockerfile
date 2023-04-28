@@ -8,14 +8,12 @@ WORKDIR /
 RUN apt update && \
     apt install -y python3-pip
 
+# Copy in the files necessary to fetch, run and serve the model.
+COPY requirements.txt model.py server.py .
+
 # Upgrade pip and install the copied in requirements.
 RUN pip install --no-cache-dir --upgrade pip
-ADD requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy in the files necessary to fetch, run and serve the model.
-ADD model.py .
-ADD server.py .
 
 # Fetch the model and cache it locally.
 RUN python3 model.py --fetch
