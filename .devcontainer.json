@@ -1,0 +1,19 @@
+{
+    "dockerFile": "Dockerfile",
+    "context": ".",
+    "runArgs": [
+        "--gpus", "all",
+        "-v", "/var/run/docker.sock:/var/run/docker.sock"
+    ],
+    "workspaceFolder": "/usr/octocloud-templates",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance",
+                "tamasfe.even-better-toml",
+                "eamodio.gitlens"
+            ]
+        }
+    }
+}
