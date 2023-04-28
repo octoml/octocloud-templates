@@ -4,7 +4,7 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 # ENV TZ=America/Los_Angeles
 
-ENV PYTHON_VERSION=3.8
+ENV PYTHON_VERSION=3.10
 RUN apt-get update --fix-missing && \
     apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:deadsnakes/ppa && \
@@ -15,7 +15,12 @@ RUN apt-get update --fix-missing && \
         python3-pip \
         python-is-python3 \
         docker.io \
-        git
+        git \
+        curl
+
+RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2 && \
+    poetry config virtualenvs.create false && \
+    poetry install
 
 COPY . /usr/octocloud-templates
 
