@@ -15,6 +15,6 @@ lint:
 	mypy --explicit-package-bases --config-file=.mypy.ini .
 
 test:
-	@echo "I am a test"
+	pytest tests
 
 .PHONY: lint format
