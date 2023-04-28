@@ -22,7 +22,7 @@ def healthcheck(_: Request) -> response.JSONResponse:
     :param request: the incoming healthcheck request.
     :return: json responding to the healthcheck.
     """
-    return response.json({"healthy": "yes"})
+    return response.json({"healthy": True})
 
 
 @server.route("/predict", methods=["POST"])
