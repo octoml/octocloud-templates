@@ -17,10 +17,15 @@ RUN apt-get update --fix-missing && \
         docker.io \
         git \
         curl
+RUN pip install --upgrade pip
+RUN pip install --upgrade distro-info
 
-RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2 && \
-    poetry config virtualenvs.create false && \
-    poetry install
+ENV PATH="/root/.local/bin:$PATH"
+WORKDIR /usr/octocloud-templates
+COPY pyproject.toml poetry.lock .
+RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
+RUN poetry config virtualenvs.create false
+RUN poetry install
 
 COPY . /usr/octocloud-templates
 

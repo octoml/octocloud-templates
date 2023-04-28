@@ -3,9 +3,9 @@ name = "octocloud-templates"
 version = "0.1.0"
 description = "OctoML Inference Containers"
 authors = ["OctoML developers"]
-packages = [
-    { include = "octocloud-templates", from = "." },
-]
+#packages = [
+#    { include = "octocloud-templates", from = "." },
+#]
 
 [tool.poetry.dependencies]
 python = ">=3.10.0"
