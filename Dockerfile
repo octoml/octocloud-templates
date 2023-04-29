@@ -1,4 +1,5 @@
-FROM ubuntu:22.04
+# FROM ubuntu:22.04
+FROM quay.io/octoml/model-server:1.0.0-all-cuda
 
 # Set frontend to non-interactive so time zone setup does not ask questions
 ENV DEBIAN_FRONTEND=noninteractive

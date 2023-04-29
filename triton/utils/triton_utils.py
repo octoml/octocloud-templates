@@ -1,4 +1,5 @@
 import enum
+import re
 import typing
 
 from triton.utils.triton_types import ModelInstanceGroup
@@ -128,3 +129,8 @@ def build_triton_config(
         )
         config += parameter + "\n"
     return config
+
+
+def sanitize_model_name(model_name: str):
+    """Make the supplied model name python wheel friendly."""
+    return re.sub(r"[^\w]", "_", model_name)
