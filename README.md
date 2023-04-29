@@ -40,6 +40,7 @@ image itself slim.
 
 
 ### Build a Docker image using the Dockerfile
+Make sure you are on a GPU instance with at least 100 GB of root storage.
 
 ```sh
 $ DOCKER_REGISTRY="XXX" # Put your Docker Hub username here
@@ -74,43 +75,9 @@ $ docker push "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic"
 
 ## Step 2: Run your Docker container in the Octo Cloud
 
-Now we can create an production-grade endpoint for your Docker container, keeping up 1 replica with the ability to autoscale up to 3 depending on traffic load. We will run the endpoint on a NVIDIA T4 instance, and our model will automatically
-[leverage the GPU when it's detected](./flan-t5-small/model.py).
-
-```sh
-$ DOCKER_TAG="$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic" # TODO add pre-built image tag here
-$ octocloud endpoint create \
-    --name flan-t5-small-sanic \
-    --image $DOCKER_TAG --port 8000 \
-    --min-replicas 1 --max-replicas 3 \
-    --instance-type t4
-$ octocloud endpoint list
-```
-
-TODO: Add more instructions for UI, etc.
-
-Once the endpoint is up, we can make requests to the automatically provisioned URL. We can
-find the URL with `jq`:
-
-```sh
-$ FLAN_ENDPOINT=$(octocloud endpoint get --name flan-t5-small-sanic --output json | jq -r '.endpoint')
-$ curl -X POST "$FLAN_ENDPOINT/predict" \
-    -H "Authorization: Bearer $OCTOCLOUD_TOKEN" \
-    -H "Content-Type: application/json" \
-    --data '{"prompt":"What state is Seattle in?","max_length":100}'
-$ octocloud logs --name flan-t5-small-sanic
-```
-
-Finally we can update the minimum number of replicas to 0 so that our endpoint autoscales down to 0 when there is no traffic.
-Note that so long as the maximum number of replicas remains above 0, OctoML Cloud will autoscale your endpoint
-up to the maximum number of replicas to handle the traffic.
-
-```sh
-$ octocloud endpoint update --name flan-t5-small-sanic --min-replicas 0
-$ octocloud endpoint list
-```
-
-TODO: Add more copy here
+Now we can create an production-grade endpoint for your Docker container. Refer to the Octo
+Cloud [tutorial](https://octo-cloud.readme.io/docs/create-custom-endpoints-from-a-container) to proceed.
+At the end of this step you will be able to run a CURL command at your endpoint!
 
 [dockerCLIAuth]: https://docs.docker.com/engine/reference/commandline/login/
 [dockerHub]: https://hub.docker.com/
