@@ -1,0 +1,5 @@
+sanic==23.3.0
+torch==2.0.0+cu118 
+--extra-index-url https://download.pytorch.org/whl/cu118
+sentencepiece==0.1.97 
+transformers==4.27.4

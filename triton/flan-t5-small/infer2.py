@@ -1,5 +1,4 @@
 import numpy as np
-
 import tritonclient.grpc as grpc_client
 
 model_name = "google_flan_t5_small"
@@ -14,15 +13,11 @@ if client.is_server_ready():
 
 
 prompt_np = np.array([str.encode(prompt_text)], dtype=np.object_)
-prompt = grpc_client.InferInput(
-    name="prompt", shape=[1], datatype="BYTES"
-)
+prompt = grpc_client.InferInput(name="prompt", shape=[1], datatype="BYTES")
 prompt.set_data_from_numpy(prompt_np)
 
 max_length_np = np.array([100], dtype=np.uint64)
-max_length = grpc_client.InferInput(
-    name="max_length", shape=[1], datatype="UINT64"
-)
+max_length = grpc_client.InferInput(name="max_length", shape=[1], datatype="UINT64")
 max_length.set_data_from_numpy(max_length_np)
 
 inputs = [prompt, max_length]

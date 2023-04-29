@@ -42,8 +42,6 @@ class TritonPythonModel:
         self.model_config = model_config = json.loads(args["model_config"])
 
         self.model_name = model_config["name"]
-        self.model_pkg = importlib.import_module(self.model_name)
-        self.model = self.model_pkg.OctomizedModel()
 
         self.inputs = model_config["input"]
         self.outputs = model_config["output"]

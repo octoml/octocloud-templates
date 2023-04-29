@@ -2,6 +2,7 @@ import json
 
 import numpy as np
 import requests
+import tritonclient
 
 # post_data = {'inputs': []}
 
@@ -40,6 +41,3 @@ import requests
 #     data=json.dumps(post_data))
 
 # print(result.json())
-
-
-import tritonclient

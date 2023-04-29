@@ -1,4 +1,7 @@
 import argparse
+import os
+import pathlib
+import shutil
 
 from triton.utils.triton_utils import (
     BackendType,
@@ -22,6 +25,15 @@ def build():
         backend=BackendType.PYTHON,
     )
     print(config)
+
+    model_dir = f"/usr/models/{sanitize_model_name(_MODEL_NAME)}"
+    os.makedirs(f"{model_dir}/1", exist_ok=True)
+    with open(os.path.join(model_dir, "config.pbtxt"), "w") as f:
+        f.writelines(config)
+    shutil.copy(
+        f"{pathlib.Path(__file__).parent}/model.py",
+        os.path.join(model_dir, "1", "model.py"),
+    )
 
 
 def main():

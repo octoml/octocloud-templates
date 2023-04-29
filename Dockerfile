@@ -28,6 +28,8 @@ RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
 RUN poetry config virtualenvs.create false
 RUN poetry install
 
+ENV PYTHONPATH=/usr/octocloud-templates/
+
 COPY . /usr/octocloud-templates
 
 CMD ["bash"]
