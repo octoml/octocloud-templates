@@ -10,6 +10,8 @@ authors = ["OctoML developers"]
 [tool.poetry.dependencies]
 python = ">=3.10.0"
 
+numpy = "1.24.3"
+
 [tool.poetry.dev-dependencies]
 black = "23.3.0"
 isort = "5.12.0"
