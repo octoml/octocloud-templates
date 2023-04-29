@@ -1,7 +1,7 @@
 import enum
 import typing
 
-from triton_types import ModelInstanceGroup
+from triton.utils.triton_types import ModelInstanceGroup
 
 _OCTOML_VERSION = "1.0.0"
 _TAG_FORMAT = "quay.io/octoml/model-server:{}-{}-{}"
@@ -66,13 +66,14 @@ class PlatformType(enum.Enum):
 
 
 def build_triton_config(
-    self,
+    model_name: str,
     inputs: typing.Sequence[TensorDetail],
     outputs: typing.Sequence[TensorDetail],
     backend: typing.Optional[BackendType] = None,
     platform: typing.Optional[PlatformType] = None,
     backend_config: typing.List[str] = [],
     instance_group: typing.Optional[InstanceGroup] = None,
+    metadata: typing.Optional[typing.Dict[str, str]] = {},
 ) -> str:
     """This function builds a model-specific config.pbtxt file required by triton.
     The file is built in a specific directory location to satisfy triton.
@@ -86,7 +87,7 @@ def build_triton_config(
         raise ValueError("Must set either platform or backend")
     if backend and platform:
         raise ValueError("Must set only one of platform or backend")
-    config = f'name: "{self.model_name}"\n'
+    config = f'name: "{model_name}"\n'
     if platform:
         config += f'platform: "{platform.value}"\n'
     elif backend:
@@ -120,7 +121,7 @@ def build_triton_config(
         config += f"instance_group [ {{ kind: {instance_group.kind.name} }} ]"
     for bc in backend_config:
         config += bc + "\n"
-    for k, v in self._model_metadata.items():
+    for k, v in metadata.items():
         parameter = 'parameters { key: "%s" value: { string_value: "%s" }}' % (
             k,
             v,
