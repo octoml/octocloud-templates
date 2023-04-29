@@ -40,7 +40,7 @@ image itself slim.
 
 
 ### Build a Docker image using the Dockerfile
-Make sure you'r on a GPU instance with at least 100 GB of root storage.
+Make sure you are on a GPU instance with at least 100 GB of root storage.
 
 ```sh
 $ DOCKER_REGISTRY="XXX" # Put your Docker Hub username here
