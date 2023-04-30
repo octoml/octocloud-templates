@@ -78,33 +78,36 @@ class TritonPythonModel:
             be the same as `requests`
         """
 
+        print("******************************************* hello")
         responses = []
 
         # Every Python backend must iterate over every one of the requests
         # and create a pb_utils.InferenceResponse for each of them.
         for request in requests:
-            # First create a list of TVM inputs inputs
             input_list = []
-            # for input_name in self.input_names:
-            #     input_tensor = pb_utils.get_input_tensor_by_name(request, input_name)
-            #     input_list.append(tvm.nd.array(input_tensor.as_numpy()))
+            prompt = pb_utils.get_input_tensor_by_name(request, "prompt").as_numpy()
+            # TODO: loop over all input strings
+            prompt_str = prompt[0].decode("utf-8")
+            max_length = pb_utils.get_input_tensor_by_name(request, "max_length").as_numpy()
 
-            # output_list = self.model.run(*input_list)
-            prompt = pb_utils.get_input_tensor_by_name(request, "prompt")
-            max_length = pb_utils.get_input_tensor_by_name(request, "max_length")
+            print(f"prompt = {prompt[0]}")
+            print(f"prompt_str = {prompt_str}")
+            print(f"max_length = {max_length[0]}")
 
-            input_ids = self._tokenizer(prompt, return_tensors="pt").input_ids.to(
+            input_ids = self._tokenizer(prompt_str, return_tensors="pt").input_ids.to(
                 _DEVICE
             )
+            print(f"input_ids = {input_ids}")
             output = self._model.generate(input_ids, max_length=max_length)
             result = self._tokenizer.decode(output[0], skip_special_tokens=True)
+            print(f"result = {result}")
 
             output_tensors = []
-            for output_tensor, output_name, output_dtype in zip(
-                output_list, self.output_names, self.output_numpy_dtypes
-            ):
-                output_tensor = pb_utils.Tensor(output_name, output_tensor.asnumpy())
-                output_tensors.append(output_tensor)
+            # for output_tensor, output_name, output_dtype in zip(
+            #     output_list, self.output_names, self.output_numpy_dtypes
+            # ):
+            #     output_tensor = pb_utils.Tensor(output_name, output_tensor.asnumpy())
+            #     output_tensors.append(output_tensor)
 
             # Create InferenceResponse. You can set an error here in case
             # there was a problem with handling this inference request.
