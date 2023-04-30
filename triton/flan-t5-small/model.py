@@ -1,6 +1,6 @@
-import importlib
 import json
 
+import numpy as np
 import torch
 
 # triton_python_backend_utils is available in every Triton Python model. You
@@ -78,46 +78,31 @@ class TritonPythonModel:
             be the same as `requests`
         """
 
-        print("******************************************* hello")
         responses = []
 
         # Every Python backend must iterate over every one of the requests
         # and create a pb_utils.InferenceResponse for each of them.
         for request in requests:
-            input_list = []
             prompt = pb_utils.get_input_tensor_by_name(request, "prompt").as_numpy()
             # TODO: loop over all input strings
             prompt_str = prompt[0].decode("utf-8")
-            max_length = pb_utils.get_input_tensor_by_name(request, "max_length").as_numpy()
-
-            print(f"prompt = {prompt[0]}")
-            print(f"prompt_str = {prompt_str}")
-            print(f"max_length = {max_length[0]}")
+            max_length = pb_utils.get_input_tensor_by_name(
+                request, "max_length"
+            ).as_numpy()
 
             input_ids = self._tokenizer(prompt_str, return_tensors="pt").input_ids.to(
                 _DEVICE
             )
-            print(f"input_ids = {input_ids}")
             output = self._model.generate(input_ids, max_length=max_length)
             result = self._tokenizer.decode(output[0], skip_special_tokens=True)
-            print(f"result = {result}")
+            result_np = np.array(
+                [str.encode(result, encoding="utf-8")], dtype=np.object_
+            )
 
-            output_tensors = []
-            # for output_tensor, output_name, output_dtype in zip(
-            #     output_list, self.output_names, self.output_numpy_dtypes
-            # ):
-            #     output_tensor = pb_utils.Tensor(output_name, output_tensor.asnumpy())
-            #     output_tensors.append(output_tensor)
+            output_tensor = pb_utils.Tensor("output", result_np)
 
-            # Create InferenceResponse. You can set an error here in case
-            # there was a problem with handling this inference request.
-            # Below is an example of how you can set errors in inference
-            # response:
-            #
-            # pb_utils.InferenceResponse(
-            #    output_tensors=..., TritonError("An error occured"))
             inference_response = pb_utils.InferenceResponse(
-                output_tensors=output_tensors
+                output_tensors=[output_tensor]
             )
             responses.append(inference_response)
 

@@ -15,7 +15,7 @@ server = Sanic("server")
 """Global instance of the web server."""
 
 
-@server.route("/healthcheck", methods=["GET"])
+@server.route("/healthcheck", methods=["GET"])  # noqa
 def healthcheck(_: Request) -> response.JSONResponse:
     """Responds to healthcheck requests.
 

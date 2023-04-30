@@ -25,11 +25,7 @@ inputs = [prompt, max_length]
 output0 = grpc_client.InferRequestedOutput(name="output")
 outputs = [output0]
 
-response = client.infer(
-    model_name=model_name, inputs=inputs, outputs=outputs
-)
+response = client.infer(model_name=model_name, inputs=inputs, outputs=outputs)
+response_text = response.as_numpy("output")[0].decode("utf-8")
 
-print(response)
-
-
-# client.infer(model_name=model_name, model_version="1", inputs=inputs, outputs=outputs)
+print(response_text)

@@ -122,12 +122,13 @@ def build_triton_config(
         config += f"instance_group [ {{ kind: {instance_group.kind.name} }} ]"
     for bc in backend_config:
         config += bc + "\n"
-    for k, v in metadata.items():
-        parameter = 'parameters { key: "%s" value: { string_value: "%s" }}' % (
-            k,
-            v,
-        )
-        config += parameter + "\n"
+    if metadata:
+        for k, v in metadata.items():
+            parameter = 'parameters { key: "%s" value: { string_value: "%s" }}' % (
+                k,
+                v,
+            )
+            config += parameter + "\n"
     return config
 
 

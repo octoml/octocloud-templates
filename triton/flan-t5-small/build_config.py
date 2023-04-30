@@ -40,7 +40,7 @@ def main():
     """Entry point for interacting with this model via CLI."""
     parser = argparse.ArgumentParser()
     parser.add_argument("--fetch", action="store_true")
-    args = parser.parse_args()
+    # args = parser.parse_args()
 
     build()
 
