@@ -4,7 +4,7 @@ import tritonclient.grpc as grpc_client
 model_name = "google_flan_t5_small"
 prompt_text = "What state is Seattle in?"
 
-client = grpc_client.InferenceServerClient("localhost:8000")
+client = grpc_client.InferenceServerClient("localhost:8001")
 
 if client.is_server_ready():
     print("Server is ready")
