@@ -19,7 +19,7 @@ flake8 = "6.0.0"
 pre-commit = "3.2.2"
 tritonclient = {extras = ["all"], version = "^2.33.0"}
 torch = "^2.0.0"
-transformers = "^"
+transformers = "^4.27.4"
 
 [tool.isort]
 multi_line_output = 3
