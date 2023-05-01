@@ -31,6 +31,6 @@ jobs:
         -f Dockerfile .
         docker push ghcr.io/octoml/octocloud-templates/ci:latest
         echo "Running lint"
-        docker run -t ghcr.io/octoml/octocloud-templates/ci:latest make lint
+        docker run -v /var/run/docker.sock:/var/run/docker.sock -t ghcr.io/octoml/octocloud-templates/ci:latest make lint
         echo "Running test"
-        docker run -t ghcr.io/octoml/octocloud-templates/ci:latest make test -s
+        docker run -v /var/run/docker.sock:/var/run/docker.sock -t ghcr.io/octoml/octocloud-templates/ci:latest make test -s
