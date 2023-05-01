@@ -7,6 +7,7 @@ from triton.utils.triton_types import ModelInstanceGroup
 _OCTOML_VERSION = "1.0.0"
 _TAG_FORMAT = "quay.io/octoml/model-server:{}-{}-{}"
 
+_MS_PER_NS = 1000000
 
 class TensorDetail(typing.NamedTuple):
     name: str
@@ -135,3 +136,8 @@ def build_triton_config(
 def sanitize_model_name(model_name: str):
     """Make the supplied model name python wheel friendly."""
     return re.sub(r"[^\w]", "_", model_name)
+
+def get_stats_time_ms(stats: typing.Dict[str, str]) -> int:
+    count = int(stats["count"])
+    ns = int(stats["ns"])
+    return (ns / count) / _MS_PER_NS
