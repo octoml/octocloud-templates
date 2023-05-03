@@ -12,7 +12,8 @@
                 "ms-python.python",
                 "ms-python.vscode-pylance",
                 "tamasfe.even-better-toml",
-                "eamodio.gitlens"
+                "eamodio.gitlens",
+                "ritwickdey.liveserver"
             ]
         }
     }

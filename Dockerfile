@@ -21,8 +21,10 @@ RUN apt-get update --fix-missing && \
 RUN pip install --upgrade pip
 RUN pip install --upgrade distro-info
 
-ENV PATH="/root/.local/bin:$PATH"
 WORKDIR /usr/octocloud-templates
+
+# Setup poetry
+ENV PATH="/root/.local/bin:$PATH" 
 COPY pyproject.toml poetry.lock .
 RUN curl -sSL https://install.python-poetry.org | python3 - --version 1.4.2
 RUN poetry config virtualenvs.create false
