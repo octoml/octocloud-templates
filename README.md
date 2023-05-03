@@ -43,16 +43,16 @@ image itself slim.
 Make sure you are on a GPU instance with at least 100 GB of root storage.
 
 ```sh
-$ DOCKER_REGISTRY="XXX" # Put your Docker Hub username here
-$ cd ./flan-t5-small
-$ docker build -t "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic" -f Dockerfile .
+DOCKER_REGISTRY="XXX" # Put your Docker Hub username here
+cd flan-t5-small
+docker build -t "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic" -f Dockerfile .
 ```
 
 ### Test the image locally
 Run this Docker image locally to test that it can run inferences as expected:
 
 ```sh
-$ docker run -d --rm \
+docker run -d --rm \
     -p 8000:8000 --env SERVER_PORT=8000 \
     --name "flan-t5-small-pytorch-sanic"
   	"$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic" 
@@ -61,7 +61,7 @@ $ docker run -d --rm \
 ..and in a separate terminal run:
 
 ```sh
-$ curl -X POST http://localhost:8000/predict \
+curl -X POST http://localhost:8000/predict \
     -H "Content-Type: application/json" \
     --data '{"prompt":"What state is Seattle in?","max_length":100}'
 ```
@@ -70,7 +70,7 @@ $ curl -X POST http://localhost:8000/predict \
 
 Push your Docker image to Docker Hub with:
 ```sh
-$ docker push "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic"
+docker push "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic"
 ```
 
 ## Step 2: Run your Docker container in the Octo Cloud
