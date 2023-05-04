@@ -63,7 +63,7 @@ docker run -d --rm \
 ```sh
 curl -X POST http://localhost:8000/predict \
     -H "Content-Type: application/json" \
-    --data '{"prompt":"What state is Seattle in?","max_length":100}'
+    --data '{"prompt":"What state is Los Angeles in?","max_length":100}'
 ```
 
 ### Push the image to a cloud registry
