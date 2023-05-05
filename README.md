@@ -25,7 +25,7 @@ Next, we wrap this model in a [Sanic][sanic] server in [server.py](flan-t5-small
 - Two server routes that Octo Cloud containers must have:
   - a route for inference requests (e.g. "`/predict`"). This route for inference requests must receive JSON inputs and JSON outputs.
   - a route for health checks (e.g. "`/healthcheck`")
-- Number of workers (not required by Octo Cloud). Typical best practice is to make this number some function of the # of CPU cores that the server has access to and should use.
+- Number of workers (not required). Typical best practice is to make this number some function of the # of CPU cores that the server has access to and should use.
 
 
 ### Package the server in a Dockerfile
@@ -33,7 +33,7 @@ Next, we wrap this model in a [Sanic][sanic] server in [server.py](flan-t5-small
 Now we can package the server by defining a Dockerfile(flan-t5-small/Dockerfile). 
 
 Along with installing the dependencies, the Dockerfile also [downloads the model](flan-t5-small/model.py)
-into the image at build time. Because the model isn't too big, we can cache it in the Docker image for faster
+into the image at build time. Because the model isn't too big, we can cache the model in the Docker image for faster
 startup without impacting the image size too much. If your model is larger, you may want to pull it on container
 start instead of caching it in the Docker image. This may affect your container startup time, but keeps the
 image itself slim.
@@ -75,8 +75,7 @@ docker push "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic"
 
 ## Step 2: Run your Docker container in the Octo Cloud
 
-Now we can create a production-grade endpoint for your Docker container. Refer to the Octo
-Cloud [tutorial](https://docs.octoai.cloud/docs/create-custom-endpoints-from-a-container) to proceed.
+Now we can create a production-grade endpoint for your Docker container. Refer to this [tutorial](https://docs.octoai.cloud/docs/create-custom-endpoints-from-a-container) to proceed.
 At the end of this step you will be able to run a CURL command at your endpoint!
 
 [dockerCLIAuth]: https://docs.docker.com/engine/reference/commandline/login/
