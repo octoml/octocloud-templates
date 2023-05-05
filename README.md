@@ -12,7 +12,7 @@ This repo contains examples of how to create production-grade endpoints for Mach
 In this example, we will use the [FLAN-T5 small](https://huggingface.co/google/flan-t5-small) model to make a production-grade endpoint for Question Answering.
 
 ## Step 1: Create a container
-If you prefer using our pre-built image at [TODO: insert image tag here] rather than building one on your local machine, skip to Step 2 below.
+If you prefer using our pre-built [image](https://hub.docker.com/r/vanessahlyan/flan-t5-small-pytorch-sanic) rather than building one on your local machine, skip to Step 2 below.
 
 ### Prepare Python code for running an inference
 
