@@ -76,7 +76,7 @@ docker push "$DOCKER_REGISTRY/flan-t5-small-pytorch-sanic"
 ## Step 2: Run your Docker container in the Octo Cloud
 
 Now we can create a production-grade endpoint for your Docker container. Refer to the Octo
-Cloud [tutorial](https://octo-cloud.readme.io/docs/create-custom-endpoints-from-a-container) to proceed.
+Cloud [tutorial](https://docs.octoai.cloud/docs/create-custom-endpoints-from-a-container) to proceed.
 At the end of this step you will be able to run a CURL command at your endpoint!
 
 [dockerCLIAuth]: https://docs.docker.com/engine/reference/commandline/login/
