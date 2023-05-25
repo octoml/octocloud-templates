@@ -1,6 +1,6 @@
 # octocloud-templates
 
-This repo contains examples of how to create production-grade endpoints for Machine Learnings models using the Octo Cloud.
+This repo contains examples of how to create production-grade endpoints for Machine Learning models using the Octo Cloud.
 
 ## Prerequisites
 
