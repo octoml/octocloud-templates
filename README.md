@@ -1,6 +1,6 @@
 # octocloud-templates
 
-This repo contains examples of how to create production-grade endpoints for Machine Learning models using the Octo Cloud.
+This repo contains code examples of how to create production-grade endpoints for Machine Learning models using the Octo Cloud.
 - In the `flan-t5-small` directory, you'll find an example of how to containerize a Hugging Face `transformers` model and deploy that on the OctoAI service.
 - In the `diffusers-prompthero` directory, you'll find an example of how to containerize a Hugging Face `diffusers` model and deploy that on the OctoAI service.
 
