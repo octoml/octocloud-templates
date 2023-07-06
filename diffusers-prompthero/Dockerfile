@@ -14,7 +14,7 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy in the files necessary to fetch, run and serve the model.
-ADD model.py .
+COPY model.py .
 COPY server.py .
 
 # Fetch the model and cache it locally.
