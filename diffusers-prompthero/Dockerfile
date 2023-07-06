@@ -10,7 +10,7 @@ RUN apt update && \
 
 # Upgrade pip and install the copied in requirements.
 RUN pip install --no-cache-dir --upgrade pip
-ADD requirements.txt requirements.txt
+COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy in the files necessary to fetch, run and serve the model.
