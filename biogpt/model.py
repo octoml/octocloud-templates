@@ -1,9 +1,11 @@
-"""Model wrapper for serving flan-t5-small."""
+"""Model wrapper for serving ."""
 import argparse
 import typing
 
 import torch
-from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
+#from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
+from transformers import BioGptTokenizer
+from transformers import BioGptForCausalLM
 
 
 
@@ -15,12 +17,12 @@ _DEVICE: str = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
 class Model:
-    """Wrapper for a flan-t5-small Text Generation model."""
+    """Wrapper for a  Text Generation model."""
 
     def __init__(self):
         """Initialize the model."""
-        self._tokenizer = AutoTokenizer.from_pretrained(_MODEL_NAME)
-        self._model = AutoModelForCausalLM.from_pretrained(_MODEL_NAME).to(
+        self._tokenizer = BioGptTokenizer.from_pretrained(_MODEL_NAME)
+        self._model = BioGptForCausalLM.from_pretrained(_MODEL_NAME).to(
             _DEVICE
         )
 
@@ -35,10 +37,11 @@ class Model:
         max_length = inputs.get("max_length", 2048)
 
         input_ids = self._tokenizer(prompt, return_tensors="pt").input_ids.to(_DEVICE)
-        output = self._model.generate(input_ids, max_length=max_length)
-        result = self._tokenizer.decode(output[0], skip_special_tokens=True)
+        #output = self._model.generate(input_ids, max_length=max_length)
+        #result = self._tokenizer.decode(output[0], skip_special_tokens=True)
         #loss = outputs.loss
         #logits = outputs.logits
+        result = self._model(**input_ids)
         return {"completion": result}
 
     @classmethod
@@ -56,7 +59,6 @@ def main():
 
     if args.fetch:
         Model.fetch()
-
-
+    
 if __name__ == "__main__":
     main()
