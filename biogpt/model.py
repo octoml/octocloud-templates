@@ -3,33 +3,23 @@ import argparse
 import typing
 
 import torch
-from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
-from transformers import BioGptTokenizer, BioGptModel
-from transformers import BioGptForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-
-
-_MODEL_NAME = "microsoft/BioGPT"
-"""The model's name on HuggingFace."""
-
+_MODEL_NAME = "microsoft/biogpt-large"
 _DEVICE: str = "cuda:0" if torch.cuda.is_available() else "cpu"
-"""Device on which to serve the model."""
-
 
 class Model:
-    """Wrapper for a  Text Generation model."""
+    """Wrapper for a Text Generation model."""
 
     def __init__(self):
         """Initialize the model."""
         self._tokenizer = AutoTokenizer.from_pretrained(_MODEL_NAME)
-        self._model = AutoModelForCausalLM.from_pretrained(_MODEL_NAME).to(
-            _DEVICE
-        )
+        self._model = AutoModelForCausalLM.from_pretrained(_MODEL_NAME).to(_DEVICE)
 
-    def decode(self, token_ids):
+    def _decode(self, token_ids):
         return ' '.join([self._tokenizer.decode(x) for x in token_ids['input_ids']])
     
-    def predict(self, inputs: typing.Dict[str, str]) -> typing.Dict[str, str]:
+    def predict(self, inputs: typing.Dict[str, typing.Union[str, int]]) -> typing.Dict[str, str]:
         """Return a dict containing the completion of the given prompt.
 
         :param inputs: dict of inputs containing a prompt and optionally the max length
@@ -40,17 +30,15 @@ class Model:
         max_length = inputs.get("max_length", 512)
 
         input_ids = self._tokenizer(prompt, return_tensors="pt").input_ids.to(_DEVICE)
-        result = self._model.generate(input_ids)
-        result = self._tokenizer.decode(result[0].squeeze(), skip_special_tokens=True)
-        
-        return {"completion": result}
+        results = self._model.generate(input_ids, max_length=max_length, num_return_sequences=5, do_sample=True)
+
+        return {f"result_{i+1}": self._tokenizer.decode(result.squeeze(), skip_special_tokens=True) 
+                for i, result in enumerate(results)}
 
     @classmethod
     def fetch(cls) -> None:
-        """Pre-fetches the model for implicit caching by Transfomers."""
-        # Running the constructor is enough to fetch this model.
+        """Pre-fetches the model for implicit caching by Transformers."""
         cls()
-
 
 def main():
     """Entry point for interacting with this model via CLI."""
@@ -61,5 +49,8 @@ def main():
     if args.fetch:
         Model.fetch()
     
+    #model = Model()
+    #print(model.predict(inputs={"prompt": "COVID-19 is"}))
+
 if __name__ == "__main__":
     main()
